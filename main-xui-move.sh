@@ -31,7 +31,7 @@ echo " Download WinSCP programs"
 echo " Connect to this server and download 2 files from /dot_migrate_xui folder "
 echo ""
 echo "/dot_migrate_xui/x-ui.db"
-echo "/dot_migrate_xui/config.json""
+echo "/dot_migrate_xui/config.json"
 echo ""
 ;;
 
