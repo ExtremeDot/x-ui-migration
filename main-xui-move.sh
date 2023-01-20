@@ -11,17 +11,34 @@ if ! isRoot; then
         exit 1
 fi
 
-echo "V2RAY X-UI PANEL SERVER CHANGER  V1.0"
+echo "V2RAY X-UI PANEL SERVER CHANGER  V1.1"
 echo "----------------------------------------"
 PS3=" $(echo $'\n'-----------------------------$'\n' "   Enter Option: " ) "
 echo ""
-options=( "01-OLD SERVER : BACKUP X-UI" "02-A:NEW SERVER - Installing Certificate [ACME]" "02-B:NEW SERVER - Installing Certificate [CERTBOT]" "03- Installing X-UI English Panel [proxykingdev]" "04-NEW SERVER: RESTORE XUI" "List Certbot" "ReNew Certbot" "CLEAR" "Quit")
+options=( "Clean BACKUP Folder" "OLD SERVER : BACKUP X-UI" "02-A:NEW SERVER - Installing Certificate [ACME]" "02-B:NEW SERVER - Installing Certificate [CERTBOT]" "03- Installing X-UI English Panel [proxykingdev]" "04-NEW SERVER: RESTORE XUI" "List Certbot" "ReNew Certbot" "CLEAR" "Quit")
 select opt in "${options[@]}"
 do
 case $opt in
 
+"Clean BACKUP Folder")
+clear
+echo ""
+echo "Do you sure the DELETE BACKUPS? "
+echo ""
+until [[ $CLEAN_BACKUP =~ (y|n) ]]; do
+read -rp "Delete Backups? [y/n]: " -e -i y CLEAN_BACKUP
+done
+
+if [[ $CLEAN_BACKUP == "y" ]]; then
+echo "Cleaning Backup Folder"
+rm -f /dot_migrate_xui
+else
+echo "Canceled"
+fi
+;;
+
 # OLD SERVER
-"01-OLD SERVER : BACKUP X-UI")
+"OLD SERVER : BACKUP X-UI")
 clear
 mkdir -p /dot_migrate_xui
 sleep 1
