@@ -31,7 +31,7 @@ done
 
 if [[ $CLEAN_BACKUP == "y" ]]; then
 echo "Cleaning Backup Folder"
-rm -f /dot_migrate_xui
+rm -rf /dot_migrate_xui
 else
 echo "Canceled"
 fi
