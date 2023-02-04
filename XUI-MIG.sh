@@ -233,7 +233,10 @@ OVERALLCHECK=""
 until [[ $OVERALLCHECK =~ (y|n) ]]; do
 read -rp "Everything is ok and Start moving OLD Server to New? [y/n]: " -e -i y OVERALLCHECK
 done
+if [[ $OVERALLCHECK == "y" ]]; then
 sTARTmIGRATION
+else
+exit; fi
 }
 
 function iPvPSdETECTION() {
