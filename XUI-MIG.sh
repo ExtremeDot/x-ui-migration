@@ -230,7 +230,7 @@ fi; fi
 function cHECKoVERALLiNFO() {
 clear
 green "V2RAY X-UI PANEL SERVER CHANGER  V2.0"; echo
-yellow "This Server is detected as= [#VPSMACHINE] "
+yellow "This Server is detected as= [$VPSMACHINE] "
 green "V2RAY PANEL: DOMAIN=[$DOMAIN_ADDRESS] - E-MAIL=[$EMAIL_ADDRESS]"
 green "OLD SERVER: IP=[$OLD_IPv4] - USER=[$OLD_LOGINNAME] - PASS=[$OLD_PASSWORD]"
 yellow "NEW SERVER: IP=[$NEW_IPv4] - USER=[$NEW_LOGINNAME] - PASS=[$NEW_PASSWORD]"
@@ -263,7 +263,6 @@ fi; fi
 
 function xANkERNELiNSTALL() {
 echo ; green "Installing XanMod Kernel"
-apt install curl
 echo ; green "Downloading the XanMod repository files..."
 curl -fSsL https://dl.xanmod.org/gpg.key | gpg --dearmor | tee /usr/share/keyrings/xanmod.gpg > /dev/null && sleep 1
 echo 'deb [signed-by=/usr/share/keyrings/xanmod.gpg] http://deb.xanmod.org releases main' | tee /etc/apt/sources.list.d/xanmod-kernel.list && sleep 1
@@ -273,10 +272,12 @@ apt -y update
 apt -y upgrade
 echo "" ; echo "Updating System... finished."
 echo ""
+echo -e "${GREEN}"
 echo "What XanMod Kernel Version want to install? ?"
 echo "   1) Stable XanMod Kernel Release"
 echo "   2) Latest Kernel XanMod EDGE (recommended for the latest kernel)"
 echo "   3) XanMod LTS (Kernel 5.15 LTS) "
+echo -e "${GREEN}"
 echo " "
 until [[ $KERNINSTAL =~ ^[0-3]+$ ]] && [ "$KERNINSTAL" -ge 1 ] && [ "$KERNINSTAL" -le 3 ]; do
 read -rp "KERNINSTAL [1-3]: " -e -i 2 KERNINSTAL
@@ -296,8 +297,10 @@ apt install linux-xanmod-lts
 echo -e "${GREEN}"
 ;;
 esac
-echo ; green "Kernel has installed ..."
-echo ; green"updating system ..."
+echo
+green "Kernel has installed ..."
+echo
+green"updating system ..."
 apt install -y intel-microcode iucode-tool
 sleep 2
 }
@@ -387,19 +390,42 @@ sleep 1
 fi
 
 #### INSTALLING X-UI PANEL
-if [[ $V2RAY_ADMINPANEL == "VAXILU" ]]; then
+echo -e "${GREEN}"
+echo "Which X-UI Panel want to install? ?"
+echo "   1) VAXILU"
+echo "   2) NIDUKA"
+echo "   3) PROXYKING"
+echo "   4) SKIP"
+echo -e "${GREEN}"
+echo " "
+until [[ $XUIINSTAL =~ ^[0-4]+$ ]] && [ "$XUIINSTAL" -ge 1 ] && [ "$XUIINSTAL" -le 4 ]; do
+read -rp "XUIINSTAL [1-4]: " -e -i 1 XUIINSTAL
+done
+case $XUIINSTAL in
+1) # VAXILU
 bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
-else if [[ $V2RAY_ADMINPANEL == "PROXYKING" ]]; then
+;;
+2) # NIDUKA
+bash <(curl -Ls https://raw.githubusercontent.com/NidukaAkalanka/x-ui-english/master/install.sh)
+;;
+3) # PROXYKING
 mkdir -p /tmp/v2Server && cd /tmp/v2Server
 wget --no-check-certificate -O install https://raw.githubusercontent.com/proxykingdev/x-ui/master/install
 sleep 1 && chmod +x install
 /tmp/v2Server/./install
-else
-bash <(curl -Ls https://raw.githubusercontent.com/NidukaAkalanka/x-ui-english/master/install.sh)
-fi; fi
+;;
+4) # SKIP
+echo -e "${GREEN}"
+;;
+esac
 
 #### FIREWALL INSTALLATION
-if [[ $FIREWALLINS == "YES" ]]; then
+echo
+green "Do you want to enable Firewall?"
+until [[ $FIREWALLINS2 =~ (y|n) ]]; do
+read -rp "Enable Firewall? ? [y/n]: " -e -i y FIREWALLINS2
+done
+if [[ $FIREWALLINS2 == "YES" ]]; then
 if [ $(dpkg-query -W -f='${Status}' ufw 2>/dev/null | grep -c "ok installed") -eq 0 ];
 then
 green " Installing Firewall"
@@ -446,11 +472,35 @@ red " ufw disable"
 fi
 
 ######## MOVING FILES INTO NEW SERVER
+case $XUIINSTAL in
+1) # VAXILU
 green "Downloading X-UI files from OLD Server"
 sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no $NEW_LOGINNAME@$NEW_IPv4:/usr/local/x-ui/bin/config.json /usr/local/x-ui/bin/config.json
 sleep 1
 sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no $NEW_LOGINNAME@$NEW_IPv4:/etc/x-ui/x-ui.db /etc/x-ui/x-ui.db
 sleep 1
+
+;;
+2) # NIDUKA
+green "Downloading X-UI files from OLD Server"
+sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no $NEW_LOGINNAME@$NEW_IPv4:/usr/local/x-ui/bin/config.json /usr/local/x-ui/bin/config.json
+sleep 1
+sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no $NEW_LOGINNAME@$NEW_IPv4:/etc/x-ui/x-ui-english.db /etc/x-ui/x-ui-english.db
+sleep 1
+;;
+3) # PROXYKING
+green "Downloading X-UI files from OLD Server"
+sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no $NEW_LOGINNAME@$NEW_IPv4:/usr/local/x-ui/bin/config.json /usr/local/x-ui/bin/config.json
+sleep 1
+sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no $NEW_LOGINNAME@$NEW_IPv4:/etc/x-ui/x-ui.db /etc/x-ui/x-ui.db
+sleep 1
+;;
+4) # SKIP
+echo -e "${GREEN}"
+;;
+esac
+
+
 else
 red "Can't reconize current VPS Detection, New or Old?"
 green "Copy /usr/local/x-ui/bin/config.json and /etc/x-ui/x-ui.db into new server"
