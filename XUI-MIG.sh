@@ -71,6 +71,13 @@ apt install -y sshpass
 else
 green "sshpass has installed"
 fi
+if [ $(dpkg-query -W -f='${Status}' dnsutils  2>/dev/null | grep -c "ok installed") -eq 0 ];
+then
+yellow "Installing dnsutils"
+apt install -y dnsutils 
+else
+green "dnsutils has installed"
+fi
 
 
 clear
@@ -189,7 +196,7 @@ else
 echo ; yellow "E-MAIL Address= [$EMAIL_ADDRESS]";
 EMAILANMES=""
 until [[ $EMAILANMES =~ (y|n) ]]; do
-read -rp "NEW SERVER: Confirm Domain Name? [y/n]: " -e -i y EMAILANMES
+read -rp "NEW SERVER: Confirm E-MAIL Address? [y/n]: " -e -i y EMAILANMES
 done
 if [[ $EMAILANMES == "n" ]]; then
 yellow "Specify E-MAIL ADDRESS"
