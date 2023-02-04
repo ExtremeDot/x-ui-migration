@@ -407,17 +407,16 @@ bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
 sleep 2
 echo " Moving BACKUPS"
 green "Downloading X-UI files from OLD Server"
-sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no $NEW_LOGINNAME@$NEW_IPv4:/usr/local/x-ui/bin/config.json /usr/local/x-ui/bin/config.json
+sshpass -p "$OLD_PASSWORD" scp -o StrictHostKeyChecking=no $OLD_LOGINNAME@$OLD_IPv4:/usr/local/x-ui/bin/config.json /usr/local/x-ui/bin/config.json
 sleep 1
-sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no $NEW_LOGINNAME@$NEW_IPv4:/etc/x-ui/x-ui.db /etc/x-ui/x-ui.d
-
+sshpass -p "$OLD_PASSWORD" scp -o StrictHostKeyChecking=no $OLD_LOGINNAME@$OLD_IPv4:/etc/x-ui/x-ui.db /etc/x-ui/x-ui.db
 ;;
 2) # NIDUKA
 bash <(curl -Ls https://raw.githubusercontent.com/NidukaAkalanka/x-ui-english/master/install.sh)
 sleep 2
-sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no $NEW_LOGINNAME@$NEW_IPv4:/usr/local/x-ui/bin/config.json /usr/local/x-ui/bin/config.json
+sshpass -p "$OLD_PASSWORD" scp -o StrictHostKeyChecking=no $OLD_LOGINNAME@$OLD_IPv4:/usr/local/x-ui/bin/config.json /usr/local/x-ui/bin/config.json
 sleep 1
-sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no $NEW_LOGINNAME@$NEW_IPv4:/etc/x-ui/x-ui.db /etc/x-ui/x-ui.d
+sshpass -p "$OLD_PASSWORD" scp -o StrictHostKeyChecking=no $OLD_LOGINNAME@$OLD_IPv4:/etc/x-ui/x-ui.db /etc/x-ui/x-ui.db
 ;;
 3) # PROXYKING
 mkdir -p /tmp/v2Server && cd /tmp/v2Server
@@ -425,9 +424,9 @@ wget --no-check-certificate -O install https://raw.githubusercontent.com/proxyki
 sleep 1 && chmod +x install
 /tmp/v2Server/./install
 sleep 2
-sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no $NEW_LOGINNAME@$NEW_IPv4:/usr/local/x-ui/bin/config.json /usr/local/x-ui/bin/config.json
+sshpass -p "$OLD_PASSWORD" scp -o StrictHostKeyChecking=no $OLD_LOGINNAME@$OLD_IPv4:/usr/local/x-ui/bin/config.json /usr/local/x-ui/bin/config.json
 sleep 1
-sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no $NEW_LOGINNAME@$NEW_IPv4:/etc/x-ui/x-ui.db /etc/x-ui/x-ui.d
+sshpass -p "$OLD_PASSWORD" scp -o StrictHostKeyChecking=no $OLD_LOGINNAME@$OLD_IPv4:/etc/x-ui/x-ui.db /etc/x-ui/x-ui.db
 ;;
 4) # SKIP
 echo -e "${GREEN}"
