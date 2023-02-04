@@ -404,15 +404,30 @@ done
 case $XUIINSTAL in
 1) # VAXILU
 bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
+sleep 2
+echo " Moving BACKUPS"
+green "Downloading X-UI files from OLD Server"
+sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no $NEW_LOGINNAME@$NEW_IPv4:/usr/local/x-ui/bin/config.json /usr/local/x-ui/bin/config.json
+sleep 1
+sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no $NEW_LOGINNAME@$NEW_IPv4:/etc/x-ui/x-ui.db /etc/x-ui/x-ui.d
+
 ;;
 2) # NIDUKA
 bash <(curl -Ls https://raw.githubusercontent.com/NidukaAkalanka/x-ui-english/master/install.sh)
+sleep 2
+sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no $NEW_LOGINNAME@$NEW_IPv4:/usr/local/x-ui/bin/config.json /usr/local/x-ui/bin/config.json
+sleep 1
+sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no $NEW_LOGINNAME@$NEW_IPv4:/etc/x-ui/x-ui.db /etc/x-ui/x-ui.d
 ;;
 3) # PROXYKING
 mkdir -p /tmp/v2Server && cd /tmp/v2Server
 wget --no-check-certificate -O install https://raw.githubusercontent.com/proxykingdev/x-ui/master/install
 sleep 1 && chmod +x install
 /tmp/v2Server/./install
+sleep 2
+sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no $NEW_LOGINNAME@$NEW_IPv4:/usr/local/x-ui/bin/config.json /usr/local/x-ui/bin/config.json
+sleep 1
+sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no $NEW_LOGINNAME@$NEW_IPv4:/etc/x-ui/x-ui.db /etc/x-ui/x-ui.d
 ;;
 4) # SKIP
 echo -e "${GREEN}"
@@ -472,34 +487,6 @@ red " ufw disable"
 fi
 
 ######## MOVING FILES INTO NEW SERVER
-case $XUIINSTAL in
-1) # VAXILU
-green "Downloading X-UI files from OLD Server"
-sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no $NEW_LOGINNAME@$NEW_IPv4:/usr/local/x-ui/bin/config.json /usr/local/x-ui/bin/config.json
-sleep 1
-sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no $NEW_LOGINNAME@$NEW_IPv4:/etc/x-ui/x-ui.db /etc/x-ui/x-ui.db
-sleep 1
-
-;;
-2) # NIDUKA
-green "Downloading X-UI files from OLD Server"
-sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no $NEW_LOGINNAME@$NEW_IPv4:/usr/local/x-ui/bin/config.json /usr/local/x-ui/bin/config.json
-sleep 1
-sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no $NEW_LOGINNAME@$NEW_IPv4:/etc/x-ui/x-ui-english.db /etc/x-ui/x-ui-english.db
-sleep 1
-;;
-3) # PROXYKING
-green "Downloading X-UI files from OLD Server"
-sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no $NEW_LOGINNAME@$NEW_IPv4:/usr/local/x-ui/bin/config.json /usr/local/x-ui/bin/config.json
-sleep 1
-sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no $NEW_LOGINNAME@$NEW_IPv4:/etc/x-ui/x-ui.db /etc/x-ui/x-ui.db
-sleep 1
-;;
-4) # SKIP
-echo -e "${GREEN}"
-;;
-esac
-
 
 else
 red "Can't reconize current VPS Detection, New or Old?"
@@ -509,7 +496,7 @@ fi; fi
 
 green "REBOOT YOUR SYSTEM AND CHECK NEW V2RAY PANEL"
 echo
-green "$DOMAIN_ADDRESS:$PANELPORT or NEW_IPv4:$PANELPORT"
+green "$DOMAIN_ADDRESS:$PANELPORT or $NEW_IPv4:$PANELPORT"
 yellow "Certificates are located in /root/cert.crt and /root/private.key"
 }
 
