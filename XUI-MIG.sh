@@ -208,6 +208,7 @@ fi; fi
 function cHECKoVERALLiNFO() {
 clear
 green "V2RAY X-UI PANEL SERVER CHANGER  V2.0"; echo
+yellow "This Server is detected as= [#VPSMACHINE] "
 green "V2RAY PANEL: DOMAIN=[$DOMAIN_ADDRESS] - E-MAIL=[$EMAIL_ADDRESS]"
 green "OLD SERVER: IP=[$OLD_IPv4] - USER=[$OLD_LOGINNAME] - PASS=[$OLD_PASSWORD]"
 yellow "NEW SERVER: IP=[$NEW_IPv4] - USER=[$NEW_LOGINNAME] - PASS=[$NEW_PASSWORD]"
@@ -218,6 +219,21 @@ until [[ $OVERALLCHECK =~ (y|n) ]]; do
 read -rp "Everything is ok and Start moving OLD Server to New? [y/n]: " -e -i y OVERALLCHECK
 done
 sTARTmIGRATION
+}
+
+function iPvPSdETECTION() {
+CURRENTPUBIP=`curl --silent -4 icanhazip.com`
+#$NEW_IPv4 #$OLD_IPv4
+if [[ $CURRENTPUBIP == $NEW_IPv4 ]]; then
+echo "Its NEW Server VPS"
+VPSMACHINE=NEW
+else if [[ $CURRENTPUBIP == $OLD_IPv4 ]]; then
+echo "Its OLD Server VPS"
+VPSMACHINE=OLD
+else
+echo "ERROR, Can't reconize "
+VPSMACHINE=UNKNOWN
+fi; fi 
 }
 
 function sTARTmIGRATION() {
@@ -236,5 +252,7 @@ echo ; blue "-EMAIL CHECK=================="; echo
 cHECKeMAILiNFO
 echo ; blue "-DOMAIN NEW IP CHECK=========="; echo
 cHECKdOMAINiP
+echo ; blue "-VPS CHECK===================="; echo
+iPvPSdETECTION
 echo ; blue "-OVERALL CHECK================"; echo
 cHECKoVERALLiNFO
