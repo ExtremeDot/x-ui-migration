@@ -71,6 +71,7 @@ apt install -y sshpass
 else
 green "sshpass has installed"
 fi
+
 if [ $(dpkg-query -W -f='${Status}' dnsutils  2>/dev/null | grep -c "ok installed") -eq 0 ];
 then
 yellow "Installing dnsutils"
@@ -78,7 +79,6 @@ apt install -y dnsutils
 else
 green "dnsutils has installed"
 fi
-
 
 clear
 green "V2RAY X-UI PANEL SERVER CHANGER  V2.0"
