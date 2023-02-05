@@ -406,11 +406,12 @@ cd /root
 wget -P /root -N --no-check-certificate "https://raw.githubusercontent.com/mack-a/v2ray-agent/master/install.sh"
 chmod 700 /root/install.sh
 /root/install.sh
+;;
 5) # SKIP
 echo -e "${GREEN}"
 ;;
 esac
-
+}
 function xUImIGRATION() {
 clear
 echo
@@ -508,7 +509,7 @@ wget https://github.com/v2fly/domain-list-community/releases/latest/download/dlc
 sleep 1
 clear
 yellow "open https://github.com/iranxray/hope/blob/main/routing.md address"
-green " do 5th step on v2ray admin panel, update Xray Related settings on Panel Settings tab"
+green "do 5th step on v2ray admin panel, update Xray Related settings on Panel Settings tab"
 echo
 }
 
