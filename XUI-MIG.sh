@@ -122,6 +122,7 @@ fi; fi
 
 ### NEW SERVER DATA
 function nEWInfo() {
+NEW_PASSWORD="$OLD_PASSWORD"
 echo "Please Enter NEW SERVER information here"
 echo
 read -e -i "$NEW_IPv4" -p "NEW SERVER: Please input PUBLIC IP v4: " input
@@ -382,7 +383,8 @@ echo "   1) VAXILU"
 echo "   2) NIDUKA"
 echo "   3) PROXYKING"
 echo "   4) V2RAY-AGENT [NO PANEL but ADVANCED]"
-echo "   5) SKIP"
+echo "   5) HAMED-AP"
+echo "   6) SKIP"
 echo -e "${GREEN}"
 echo " "
 until [[ $XUIINSTAL =~ ^[0-5]+$ ]] && [ "$XUIINSTAL" -ge 1 ] && [ "$XUIINSTAL" -le 5 ]; do
@@ -406,6 +408,9 @@ cd /root
 wget -P /root -N --no-check-certificate "https://raw.githubusercontent.com/mack-a/v2ray-agent/master/install.sh"
 chmod 700 /root/install.sh
 /root/install.sh
+;;
+2) # HAMEDAP
+bash <(curl -Ls https://raw.githubusercontent.com/HamedAp/x-ui-Persian/master/install.sh)
 ;;
 5) # SKIP
 echo -e "${GREEN}"
@@ -437,7 +442,7 @@ green "Do you want to enable Firewall?"
 until [[ $FIREWALLINS2 =~ (y|n) ]]; do
 read -rp "Enable Firewall? ? [y/n]: " -e -i y FIREWALLINS2
 done
-if [[ $FIREWALLINS2 == "YES" ]]; then
+if [[ $FIREWALLINS2 == "y" ]]; then
 if [ $(dpkg-query -W -f='${Status}' ufw 2>/dev/null | grep -c "ok installed") -eq 0 ];
 then
 green " Installing Firewall"
