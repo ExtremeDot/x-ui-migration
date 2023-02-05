@@ -88,7 +88,6 @@ green "Welcome to ExtremeDot X-UI panel migration Script"
 echo
 
 function oLDInfo() {
-clear
 green "Please Enter OLD SERVER information here"
 echo
 read -e -i "$OLD_IPv4" -p "OLD SERVER: Please input PUBLIC IP v4: " input
@@ -102,6 +101,7 @@ oLDgETiNFO
 
 # OLD SERVER GET DATA
 function oLDgETiNFO() {
+clear
 if [[ -z $OLD_IPv4 || -z $OLD_LOGINNAME || -z $OLD_PASSWORD ]]; then #INFORMATION IS NOT CORRECT
 red "OLD SERVER: ERROR getting DATA"; echo
 oLDInfo
@@ -122,7 +122,6 @@ fi; fi
 
 ### NEW SERVER DATA
 function nEWInfo() {
-clear
 echo "Please Enter NEW SERVER information here"
 echo
 read -e -i "$NEW_IPv4" -p "NEW SERVER: Please input PUBLIC IP v4: " input
@@ -135,6 +134,7 @@ nEWgETiNFO
 }
 # NEW SERVER GET DATA
 function nEWgETiNFO() {
+clear
 if [[ -z $NEW_IPv4 || -z $NEW_LOGINNAME || -z $NEW_PASSWORD ]]; then #INFORMATION IS NOT CORRECT
 red "NEW SERVER: ERROR getting DATA"; echo
 nEWInfo
@@ -155,7 +155,6 @@ fi; fi
 
 ### DOMAIN CHECK
 function gETdOMAINiNFO() {
-clear
 echo; red "NEW SERVER: ERROR getting DOMAIN name"; echo
 read -e -i "$DOMAIN_ADDRESS" -p "NEW SERVER: Please enter damain address: " input
 DOMAIN_ADDRESS="${input:-$DOMAIN_ADDRESS}"
@@ -163,6 +162,7 @@ cHECKdOMAINiNFO
 }
 
 function cHECKdOMAINiNFO() {
+clear
 green "New Server Domain Check"; echo
 if [[ -z $DOMAIN_ADDRESS ]]; then #DOMAIN ADDRESS IS NOT ENTERED
 gETdOMAINiNFO
@@ -181,7 +181,6 @@ fi; fi
 ######## EMAIL CHECK
 #EMAIL_ADDRESS=
 function gETeMAILiNFO() {
-clear
 echo; red "NEW SERVER: ERROR getting E-MAIL Address"; echo
 read -e -i "$EMAIL_ADDRESS" -p "NEW SERVER: Please enter E-MAIL address: " input
 EMAIL_ADDRESS="${input:-$EMAIL_ADDRESS}"
@@ -207,6 +206,8 @@ fi; fi
 function cHECKdOMAINiP() {
 echo
 green "$DOMAIN_ADDRESS IP must be $NEW_IPv4, now check the ip of domain!"
+echo
+green "Checking IP for $DOMAIN_ADDRESS"
 IPCHECKNEWDOMAIN=`dig +short $DOMAIN_ADDRESS` && sleep 1
 DOMCHECKS=""
 until [[ $DOMCHECKS =~ (y|n) ]]; do
@@ -231,9 +232,9 @@ function cHECKoVERALLiNFO() {
 clear
 green "V2RAY X-UI PANEL SERVER CHANGER  V2.0"; echo
 yellow "This Server is detected as= [$VPSMACHINE] "
-green "V2RAY PANEL: DOMAIN=[$DOMAIN_ADDRESS] - E-MAIL=[$EMAIL_ADDRESS]"
+yellow "V2RAY PANEL: DOMAIN=[$DOMAIN_ADDRESS] - E-MAIL=[$EMAIL_ADDRESS]"
 green "OLD SERVER: IP=[$OLD_IPv4] - USER=[$OLD_LOGINNAME] - PASS=[$OLD_PASSWORD]"
-yellow "NEW SERVER: IP=[$NEW_IPv4] - USER=[$NEW_LOGINNAME] - PASS=[$NEW_PASSWORD]"
+green "NEW SERVER: IP=[$NEW_IPv4] - USER=[$NEW_LOGINNAME] - PASS=[$NEW_PASSWORD]"
 green "NEW PANEL [$DOMAIN_ADDRESS] is set to [$IPCHECKNEWDOMAIN]"
 echo
 OVERALLCHECK=""
@@ -271,7 +272,7 @@ echo ; green "Updating System... starting."
 apt -y update
 apt -y upgrade
 echo "" ; echo "Updating System... finished."
-echo ""
+clear && echo
 echo -e "${GREEN}"
 echo "What XanMod Kernel Version want to install? ?"
 echo "   1) Stable XanMod Kernel Release"
@@ -305,40 +306,14 @@ apt install -y intel-microcode iucode-tool
 sleep 2
 }
 
-
-function sTARTmIGRATION() {
-clear
-echo ; green "Start Moving X-UI Panel to New Server"
-
-# IF its in old Server
-if [[ $VPSMACHINE == "OLD" ]]; then
-yellow "OLD SERVER is Detected!"; echo
-red " PLEASE RUN SCRIPT OVER NEW SERVER"
-red " E X I T "
-echo
-sleep 5 && exit 0
-#green "Uploading X-UI files into NEW Server"
-#sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no /usr/local/x-ui/bin/config.json $NEW_LOGINNAME@$NEW_IPv4:/usr/local/x-ui/bin/config.json
-#sleep 1
-#sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no /etc/x-ui/x-ui.db $NEW_LOGINNAME@$NEW_IPv4:/etc/x-ui/x-ui.db
-#sleep 1
-else if [[ $VPSMACHINE == "NEW" ]]; then
-yellow "New SERVER is Detected!"; echo
-green "Installing V2Ray Panel, [$V2RAY_ADMINPANEL]"; echo
-green "update and upgrading system.."
-apt update && apt upgrade -y
-
-until [[ $XANKERNELIN1 =~ (y|n) ]]; do
-read -rp "Install XANMOD Kernel? BBR2 Enabled [y/n]: " -e -i n XANKERNELIN1
+function aCMEiNSTALL() {
+green "ACME Certificate Installer?"
+green "Disable if you want to use V2RAY-AGENT Script"
+until [[ $ACMEINSTALLER =~ (y|n) ]]; do
+read -rp "Install ACME Certificate Generator? [y/n]: " -e -i y ACMEINSTALLER
 done
-if [[ $XANKERNELIN1 == "y" ]]; then
-echo ; green "Installing XANMOD KERNEL"
-xANkERNELiNSTALL
-else
-echo ; green "XAN KERNEL SKIPPED"
-fi
-
-echo; green "Installing ACME certificate tool"
+if [[ $ACMEINSTALLER == "y" ]]; then
+echo&& green "Installing ACME certificate tool"
 apt install curl socat -y
 sleep 1
 curl https://get.acme.sh | sh
@@ -355,8 +330,15 @@ echo ; green "Certfiles are installed and copied to :"; echo
 blue "/root/cert.crt"
 blue "/root/private.key"
 echo
+fi
+}
 
+function bBRiNSTALL() {
+clear
 green "Enabling BBR?"
+if [[ $XANMODINSTALL == "YES" ]]; then
+green "BBR2 has installed by XANMOD KERNEL , SKIP"
+else
 yellow "Skip if you have installed XANMOD KERNEL"
 until [[ $BBREANBLE =~ (y|n) ]]; do
 read -rp "Enable BBR? ? [y/n]: " -e -i n BBREANBLE
@@ -371,9 +353,11 @@ sysctl -p
 else
 sleep 1
 echo "Skipping BBR Enabling"
-fi
+fi; fi
+}
 
-# Enable IPV6 ?
+function iPV6eNNABLER() {
+clear
 echo
 green "Do you want to enable IPv6? Avoid Google reCAPTCHA human verification"
 until [[ $IPV6ABLE =~ (y|n) ]]; do
@@ -388,52 +372,65 @@ if [[ $(sysctl -a | grep 'disable_ipv6.*=.*1') || $(cat /etc/sysctl.{conf,d/*} |
 fi
 sleep 1
 fi
+}
 
-#### INSTALLING X-UI PANEL
+function xUIpANELiNSTALLER() {
+clear
 echo -e "${GREEN}"
 echo "Which X-UI Panel want to install? ?"
 echo "   1) VAXILU"
 echo "   2) NIDUKA"
 echo "   3) PROXYKING"
-echo "   4) SKIP"
+echo "   4) V2RAY-AGENT [NO PANEL but ADVANCED]"
+echo "   5) SKIP"
 echo -e "${GREEN}"
 echo " "
-until [[ $XUIINSTAL =~ ^[0-4]+$ ]] && [ "$XUIINSTAL" -ge 1 ] && [ "$XUIINSTAL" -le 4 ]; do
-read -rp "XUIINSTAL [1-4]: " -e -i 1 XUIINSTAL
+until [[ $XUIINSTAL =~ ^[0-5]+$ ]] && [ "$XUIINSTAL" -ge 1 ] && [ "$XUIINSTAL" -le 5 ]; do
+read -rp "XUIINSTAL [1-5]: " -e -i 1 XUIINSTAL
 done
 case $XUIINSTAL in
 1) # VAXILU
 bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
-sleep 2
-echo " Moving BACKUPS"
-green "Downloading X-UI files from OLD Server"
-sshpass -p "$OLD_PASSWORD" scp -o StrictHostKeyChecking=no $OLD_LOGINNAME@$OLD_IPv4:/usr/local/x-ui/bin/config.json /usr/local/x-ui/bin/config.json
-sleep 1
-sshpass -p "$OLD_PASSWORD" scp -o StrictHostKeyChecking=no $OLD_LOGINNAME@$OLD_IPv4:/etc/x-ui/x-ui.db /etc/x-ui/x-ui.db
 ;;
 2) # NIDUKA
 bash <(curl -Ls https://raw.githubusercontent.com/NidukaAkalanka/x-ui-english/master/install.sh)
-sleep 2
-sshpass -p "$OLD_PASSWORD" scp -o StrictHostKeyChecking=no $OLD_LOGINNAME@$OLD_IPv4:/usr/local/x-ui/bin/config.json /usr/local/x-ui/bin/config.json
-sleep 1
-sshpass -p "$OLD_PASSWORD" scp -o StrictHostKeyChecking=no $OLD_LOGINNAME@$OLD_IPv4:/etc/x-ui/x-ui.db /etc/x-ui/x-ui.db
 ;;
 3) # PROXYKING
 mkdir -p /tmp/v2Server && cd /tmp/v2Server
 wget --no-check-certificate -O install https://raw.githubusercontent.com/proxykingdev/x-ui/master/install
 sleep 1 && chmod +x install
 /tmp/v2Server/./install
-sleep 2
-sshpass -p "$OLD_PASSWORD" scp -o StrictHostKeyChecking=no $OLD_LOGINNAME@$OLD_IPv4:/usr/local/x-ui/bin/config.json /usr/local/x-ui/bin/config.json
-sleep 1
-sshpass -p "$OLD_PASSWORD" scp -o StrictHostKeyChecking=no $OLD_LOGINNAME@$OLD_IPv4:/etc/x-ui/x-ui.db /etc/x-ui/x-ui.db
 ;;
-4) # SKIP
+4) # V2RAY-AGENT
+cd /root
+wget -P /root -N --no-check-certificate "https://raw.githubusercontent.com/mack-a/v2ray-agent/master/install.sh"
+chmod 700 /root/install.sh
+/root/install.sh
+5) # SKIP
 echo -e "${GREEN}"
 ;;
 esac
 
-#### FIREWALL INSTALLATION
+function xUImIGRATION() {
+clear
+echo
+green "Enable Migration?"
+green "You can transfer data migration from OLD server to NEW server"
+until [[ $XUIMIGRATION =~ (y|n) ]]; do
+read -rp "Enable X-UI Migration? ? [y/n]: " -e -i y XUIMIGRATION
+done
+if [[ $XUIMIGRATION == "y" ]]; then
+echo " Moving BACKUPS"
+green "Downloading X-UI files from OLD Server"
+sshpass -p "$OLD_PASSWORD" scp -o StrictHostKeyChecking=no $OLD_LOGINNAME@$OLD_IPv4:/usr/local/x-ui/bin/config.json /usr/local/x-ui/bin/config.json
+sleep 1
+sshpass -p "$OLD_PASSWORD" scp -o StrictHostKeyChecking=no $OLD_LOGINNAME@$OLD_IPv4:/etc/x-ui/x-ui.db /etc/x-ui/x-ui.db
+else
+green "SKIPPED X-UI MIGRATION!"
+fi
+}
+
+function fIREWALLiNSTALLER() {
 echo
 green "Do you want to enable Firewall?"
 until [[ $FIREWALLINS2 =~ (y|n) ]]; do
@@ -484,9 +481,87 @@ green " you can disable or enable firewall using commands:"
 blue " ufw enable"
 red " ufw disable"
 fi
+}
+
+function xANmODkERNELiNSTALL() {
+until [[ $XANKERNELIN1 =~ (y|n) ]]; do
+read -rp "Install XANMOD Kernel? BBR2 Included [y/n]: " -e -i n XANKERNELIN1
+done
+if [[ $XANKERNELIN1 == "y" ]]; then
+echo ; green "Installing XANMOD KERNEL"
+XANMODINSTALL=YES
+xANkERNELiNSTALL
+else
+echo ; green "XAN KERNEL SKIPPED"
+XANMODINSTALL=NO
+fi
+}
+
+function iRANgEoFILES() {
+mkdir -p /usr/local/x-ui/bin
+sleep 1
+cd /usr/local/x-ui/bin
+sleep 1
+wget https://github.com/bootmortis/iran-hosted-domains/releases/latest/download/iran.dat
+sleep 1
+wget https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat
+sleep 1
+clear
+yellow "open https://github.com/iranxray/hope/blob/main/routing.md address"
+green " do 5th step on v2ray admin panel, update Xray Related settings on Panel Settings tab"
+echo
+}
+
+
+function sTARTmIGRATION() {
+clear
+echo ; green "Start Moving X-UI Panel to New Server"
+
+# IF its in old Server
+if [[ $VPSMACHINE == "OLD" ]]; then
+yellow "OLD SERVER is Detected!"; echo
+red " PLEASE RUN SCRIPT OVER NEW SERVER"
+red " E X I T "
+echo
+sleep 5 && exit 0
+#green "Uploading X-UI files into NEW Server"
+#sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no /usr/local/x-ui/bin/config.json $NEW_LOGINNAME@$NEW_IPv4:/usr/local/x-ui/bin/config.json
+#sleep 1
+#sshpass -p "$NEW_PASSWORD" scp -o StrictHostKeyChecking=no /etc/x-ui/x-ui.db $NEW_LOGINNAME@$NEW_IPv4:/etc/x-ui/x-ui.db
+#sleep 1
+
+else if [[ $VPSMACHINE == "NEW" ]]; then
+yellow "New SERVER is Detected!"; echo
+green "Installing V2Ray Panel, [$V2RAY_ADMINPANEL]"; echo
+green "update and upgrading system.."
+apt update && apt upgrade -y
+clear
+
+# XANMOD KERNEL
+xANmODkERNELiNSTALL
+
+# INSTALLING CERTIFICATES
+aCMEiNSTALL
+
+# ENABLING BBR
+bBRiNSTALL
+
+# Enable IPV6 ?
+iPV6eNNABLER
+
+# INSTALLING X-UI PANEL
+xUIpANELiNSTALLER
+
+# XUI MIGRATOR
+xUImIGRATION
+
+# FIREWALL INSTALLATION
+fIREWALLiNSTALLER
+
+# IRAN GEO FILES
+iRANgEoFILES
 
 ######## MOVING FILES INTO NEW SERVER
-
 else
 red "Can't reconize current VPS Detection, New or Old?"
 green "Copy /usr/local/x-ui/bin/config.json and /etc/x-ui/x-ui.db into new server"
