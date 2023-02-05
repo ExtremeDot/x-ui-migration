@@ -142,7 +142,8 @@ else
 echo
 yellow "NEW SERVER INFORMATION ---------"
 yellow "IP=[$NEW_IPv4]"
-yellow "USER=[$NEW_LOGINNAME]  -   PASS=[$NEW_PASSWORD] "
+yellow "USER=[$NEW_LOGINNAME]"
+yellow "PASS=[$NEW_PASSWORD] "
 NEW_SETUP=""
 until [[ $NEW_SETUP =~ (y|n) ]]; do
 read -rp "NEW SERVER: Confirm NEW Server Information? [y/n]: " -e -i y NEW_SETUP
@@ -167,10 +168,9 @@ green "New Server Domain Check"; echo
 if [[ -z $DOMAIN_ADDRESS ]]; then #DOMAIN ADDRESS IS NOT ENTERED
 gETdOMAINiNFO
 else
-echo ; yellow "DomainName= [$DOMAIN_ADDRESS]";
 DOMAINANMES=""
 until [[ $DOMAINANMES =~ (y|n) ]]; do
-read -rp "NEW SERVER: Confirm Domain Name? [y/n]: " -e -i y DOMAINANMES
+read -rp "NEW SERVER: Confirm Domain Name [$DOMAIN_ADDRESS]? [y/n]: " -e -i y DOMAINANMES
 done
 if [[ $DOMAINANMES == "n" ]]; then
 yellow "Specify Domain Name"
@@ -192,10 +192,9 @@ green "New Server Email Address Check"; echo
 if [[ -z $EMAIL_ADDRESS ]]; then #E-MAIL ADDRESS IS NOT ENTERED
 gETeMAILiNFO
 else
-echo ; yellow "E-MAIL Address= [$EMAIL_ADDRESS]";
 EMAILANMES=""
 until [[ $EMAILANMES =~ (y|n) ]]; do
-read -rp "NEW SERVER: Confirm E-MAIL Address? [y/n]: " -e -i y EMAILANMES
+read -rp "NEW SERVER: Confirm E-MAIL Address [$EMAIL_ADDRESS]? [y/n]: " -e -i y EMAILANMES
 done
 if [[ $EMAILANMES == "n" ]]; then
 yellow "Specify E-MAIL ADDRESS"
@@ -263,6 +262,7 @@ fi; fi
 }
 
 function xANkERNELiNSTALL() {
+clear
 echo ; green "Installing XanMod Kernel"
 echo ; green "Downloading the XanMod repository files..."
 curl -fSsL https://dl.xanmod.org/gpg.key | gpg --dearmor | tee /usr/share/keyrings/xanmod.gpg > /dev/null && sleep 1
